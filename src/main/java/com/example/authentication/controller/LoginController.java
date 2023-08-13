@@ -1,5 +1,6 @@
 package com.example.authentication.controller;
 
+import com.example.authentication.dto.ListUsersDTO;
 import com.example.authentication.dto.UserDTO;
 import com.example.authentication.exception.UserException;
 import com.example.authentication.model.State;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+import java.util.List;
 
 @Controller
 @RequestMapping("/")
@@ -26,7 +28,8 @@ public class LoginController {
     @GetMapping
     public String showHomePage(Model model, HttpSession session){
         UserDTO userDTO =(UserDTO) session.getAttribute("user");
-        if(userDTO != null){
+
+        if(userDTO != null ){
             model.addAttribute("user", userDTO);
         }
         return "index";
@@ -37,14 +40,20 @@ public class LoginController {
         return "login";
     }
     @PostMapping("login")
-    public String handleLogin(@Valid @ModelAttribute LoginRequest loginRequest, BindingResult result, HttpSession session)
+    public String handleLogin(@Valid @ModelAttribute LoginRequest loginRequest, BindingResult result, HttpSession session, Model model)
             throws InvalidKeySpecException, NoSuchAlgorithmException {
         if(result.hasErrors()){
             return "login";
         }
         User user;
+        List<User> listUsers;
         try{
             user = userService.login(loginRequest.email(), loginRequest.password());
+            listUsers = userService.getListUsers();
+//            ListUsersDTO ListUsersDTO;
+//            model.addAttribute("listUsers", new ListUsersDTO(listUsers));
+            session.setAttribute("listUsers", new ListUsersDTO(listUsers) );
+//            model.addAttribute("listUsers", new ListUsersDTO(listUsers));
             session.setAttribute("user", new UserDTO(user.getId(), user.getFullName(),user.getEmail()));
             return "redirect:/";
         }catch(UserException ex){
@@ -92,10 +101,12 @@ public class LoginController {
     }
 
     @GetMapping("admin")
-    public String showAdminPage (HttpSession session){
-
+    public String showAdminPage (HttpSession session, Model model){
         UserDTO userDTO =(UserDTO) session.getAttribute("user");
+        ListUsersDTO listUsersDTO = (ListUsersDTO) session.getAttribute("listUsers");
+
         if(userDTO != null){
+            model.addAttribute("listUsers",listUsersDTO);
             return "admin";
         }else {
             return "redirect:/";

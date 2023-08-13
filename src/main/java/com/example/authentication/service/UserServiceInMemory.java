@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -90,5 +92,15 @@ public class UserServiceInMemory implements UserService {
     @Override
     public User findById(String id) {
         return null;
+    }
+
+    @Override
+    public  List<User> getListUsers() {
+        List<User> result = new ArrayList<>();
+        for (User user: userRepo.getListUsers()){
+            result.add(user);
+        }
+//        System.out.println("userRepo = " + result );
+        return result;
     }
 }

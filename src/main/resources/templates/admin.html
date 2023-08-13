@@ -6,5 +6,22 @@
 </head>
 <body>
     <h1>Admin</h1>
+<!--    <th:block >-->
+        <table >
+            <tr>
+                <th>ID</th>
+                <th>Full Name</th>
+                <th>Email</th>
+                <th>State</th>
+                <th>Change State</th>
+            </tr>
+            <tr th:each="user: ${listUsers.listUsers}">
+                <td th:text="${user.getId()}"></td>
+                <td th:text="${user.getFullName()}"></td>
+                <td th:text="${user.getEmail()}"></td>
+                <td th:text="${user.getState()}"></td>
+                <td><button type="button" th:action="">Change</button></td>
+            </tr>
+        </table>
 </body>
 </html>
