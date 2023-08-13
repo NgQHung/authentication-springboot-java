@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8"/>
+
     <title>Home</title>
 </head>
 <body>
@@ -10,11 +11,14 @@
 <!--<a href="/register">Register</a><br/>-->
 <!--<a href="/logout">Log out</a><br/>-->
 <th:block th:if="${user != null}">
-    <a href="/logout" th:text="|Logout as ${user.fullName} |">Logout</a><br/>
-    <a href="/admin" >Admin</a><br/>
+<!--    <a href="/logout" th:text="|Logout as ${user.fullName}|">Logout</a><br/>-->
+<!--    <a th:text="Admin"></a><br/>-->
+    <a href="/logout" th:if="${user.fullName() == 'Admin' }" th:text="|Logout as ${user.fullName}|">Logout</a><br/>
+    <a href="/admin" th:if="${user.fullName() == 'Admin' }" th:text="Admin" ></a><br/>
+    <a href="/logout" th:unless="${user.fullName() == 'Admin'}" th:text="|Logout as ${user.fullName}|">Logout</a>
 </th:block>
 <th:block th:if="${user == null}">
-    <a href="/logout">Logout</a></br>
+    <a href="/login">Login</a></br>
     <a href="/register">Register</a><br/>
 </th:block>
 </body>

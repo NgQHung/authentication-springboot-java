@@ -5,6 +5,7 @@ import com.example.authentication.exception.UserException;
 import com.example.authentication.model.State;
 import com.example.authentication.model.User;
 import com.example.authentication.request.LoginRequest;
+import com.example.authentication.request.RegisterRequest;
 import com.example.authentication.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -38,13 +39,12 @@ public class LoginController {
     @PostMapping("login")
     public String handleLogin(@Valid @ModelAttribute LoginRequest loginRequest, BindingResult result, HttpSession session)
             throws InvalidKeySpecException, NoSuchAlgorithmException {
-        System.out.println("Result = " +result);
         if(result.hasErrors()){
             return "login";
         }
-        User user = new User("","", "", "", State.PENDING);
+        User user;
         try{
-            userService.login(loginRequest.email(), loginRequest.password());
+            user = userService.login(loginRequest.email(), loginRequest.password());
             session.setAttribute("user", new UserDTO(user.getId(), user.getFullName(),user.getEmail()));
             return "redirect:/";
         }catch(UserException ex){
@@ -64,10 +64,31 @@ public class LoginController {
         }
     }
 
-
     @GetMapping("register")
-    public String register (){
+    public String register (Model model){
+        model.addAttribute("registerRequest", new RegisterRequest("","",""));
         return "register";
+    }
+
+    @PostMapping("register")
+    public String register (@Valid @ModelAttribute RegisterRequest registerRequest, BindingResult result, HttpSession session)throws InvalidKeySpecException, NoSuchAlgorithmException {
+        if(result.hasErrors()){
+            return "register";
+        }
+        User user;
+        try{
+            user = userService.addUser(registerRequest.fullName(),registerRequest.email(), registerRequest.password());
+            session.setAttribute("user", new UserDTO(user.getId(), user.getFullName(),user.getEmail()));
+            return "redirect:/";
+        }catch(UserException ex){
+            System.out.println(ex.getMessage());
+            switch(ex.getMessage()){
+                case "Email is existed":
+                    result.addError(new FieldError("registerRequest", "email", "Email is existed"));
+                    break;
+            }
+            return "register";
+        }
     }
 
     @GetMapping("admin")
@@ -82,6 +103,7 @@ public class LoginController {
     }
     @GetMapping("logout")
     public String logout (HttpSession session){
+//        if(userService.findByEmail())
         session.setAttribute("user", null);
         session.removeAttribute("user ");
         return "redirect:/";

@@ -55,6 +55,10 @@ public class UserServiceInMemory implements UserService {
 
     @Override
     public User addUser(String fullName, String email, String password) throws InvalidKeySpecException, NoSuchAlgorithmException {
+        boolean isEmailExist = userRepo.isEmailExist(email);
+        if(isEmailExist){
+            throw new UserException("Email is existed");
+        }
         return userRepo.addUser(fullName, email, hashing.hashPassword(password));
     }
 
