@@ -7,7 +7,7 @@
 <body>
     <h1>Admin</h1>
 <!--    <th:block >-->
-        <table >
+        <table>
             <tr>
                 <th>ID</th>
                 <th>Full Name</th>
@@ -20,7 +20,9 @@
                 <td th:text="${user.getFullName()}"></td>
                 <td th:text="${user.getEmail()}"></td>
                 <td th:text="${user.getState()}"></td>
-                <td><button type="button" th:action="">Change</button></td>
+                <td><form th:action="change-state">
+                    <button type="submit" th:if="${user.getState() != 'ACTIVE'}" th:name="action" th:value="${user.getId()}" th:onclick="|window.location.href='/change-state'|">Change</button>
+                </form></td>
             </tr>
         </table>
 </body>

@@ -4,7 +4,6 @@ import com.example.authentication.model.State;
 import com.example.authentication.model.User;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -34,16 +33,19 @@ public class UserRepo {
      return users.values().stream().filter(user -> user.getEmail().equalsIgnoreCase(email)).count() > 0;
     }
     public List<User> getListUsers(){
-        List<User> result = new ArrayList<>();
-//        for(User user: users){
-//
-//        }
         return users.values().stream().toList();
      }
-
-
 
     public Optional<User> findByEmail(String email) {
         return users.values().stream().filter(user -> user.getEmail().equalsIgnoreCase(email)).findFirst();
     }
+    public Optional<User> findById(String id) {
+        return users.values().stream().filter(user -> user.getId().equals(id)).findFirst();
+    }
+    public User changeState(User user){
+        System.out.println("State User Repo = " + user.getState());
+        return users.put(user.getId(), user);
+    }
+
+
 }

@@ -1,6 +1,7 @@
 package com.example.authentication.controller;
 
 import com.example.authentication.dto.ListUsersDTO;
+import com.example.authentication.dto.StateDTO;
 import com.example.authentication.dto.UserDTO;
 import com.example.authentication.exception.UserException;
 import com.example.authentication.model.State;
@@ -50,10 +51,7 @@ public class LoginController {
         try{
             user = userService.login(loginRequest.email(), loginRequest.password());
             listUsers = userService.getListUsers();
-//            ListUsersDTO ListUsersDTO;
-//            model.addAttribute("listUsers", new ListUsersDTO(listUsers));
             session.setAttribute("listUsers", new ListUsersDTO(listUsers) );
-//            model.addAttribute("listUsers", new ListUsersDTO(listUsers));
             session.setAttribute("user", new UserDTO(user.getId(), user.getFullName(),user.getEmail()));
             return "redirect:/";
         }catch(UserException ex){
@@ -106,15 +104,22 @@ public class LoginController {
         ListUsersDTO listUsersDTO = (ListUsersDTO) session.getAttribute("listUsers");
 
         if(userDTO != null){
-            model.addAttribute("listUsers",listUsersDTO);
+            model.addAttribute("listUsers", listUsersDTO);
             return "admin";
-        }else {
+        } else {
             return "redirect:/";
         }
     }
+    @RequestMapping(value="/change-state")
+    public String changeState( @RequestParam(value = "action", required = false) String action, HttpSession session) {
+        List<User> listUsers;
+        userService.activeUser(action);
+        listUsers = userService.getListUsers();
+        session.setAttribute("listUsers", new ListUsersDTO(listUsers) );
+        return "redirect:/admin";
+    }
     @GetMapping("logout")
     public String logout (HttpSession session){
-//        if(userService.findByEmail())
         session.setAttribute("user", null);
         session.removeAttribute("user ");
         return "redirect:/";

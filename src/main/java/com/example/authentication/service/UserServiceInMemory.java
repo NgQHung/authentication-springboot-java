@@ -21,6 +21,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class UserServiceInMemory implements UserService {
     private UserRepo userRepo;
     private Hashing hashing;
+//    private String searchText;
 //    private SHAHash md5;
 //    private ConcurrentHashMap<String, String> activate_code_user_id
 
@@ -70,7 +71,12 @@ public class UserServiceInMemory implements UserService {
     }
 
     @Override
-    public Boolean activeUser(String activation_code) {
+    public Boolean activeUser(String id) {
+        Optional<User> o_user = userRepo.findById(id);
+        User new_o_user = new User(o_user.get().getId(),o_user.get().getFullName(), o_user.get().getEmail(), o_user.get().getHashedPassword(), State.ACTIVE);
+        User newUser = userRepo.changeState(new_o_user);
+//        if(o_user.isPresent())
+        System.out.println("Updated user = " + newUser);
         return null;
     }
 
@@ -89,18 +95,13 @@ public class UserServiceInMemory implements UserService {
         return Optional.empty();
     }
 
-    @Override
-    public User findById(String id) {
-        return null;
-    }
+//    @Override
+//    public User findById(String id) {
+//        return null;
+//    }
 
     @Override
     public  List<User> getListUsers() {
-        List<User> result = new ArrayList<>();
-        for (User user: userRepo.getListUsers()){
-            result.add(user);
-        }
-//        System.out.println("userRepo = " + result );
-        return result;
+        return new ArrayList<>(userRepo.getListUsers());
     }
 }

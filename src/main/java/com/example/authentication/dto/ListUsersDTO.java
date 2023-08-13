@@ -9,6 +9,4 @@ public record ListUsersDTO(List<User> listUsers) {
     public ListUsersDTO(List<User> listUsers){
         this.listUsers = listUsers;
     }
-//    String id, String fullName, String email
-//    List<ListUsersDTO> listUser = new ArrayList<Record>();
 }
