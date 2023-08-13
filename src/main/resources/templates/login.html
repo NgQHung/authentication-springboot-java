@@ -8,9 +8,9 @@
 
 <h1>Login</h1>
 <form method="post" action="#" th:action="login" th:object="${loginRequest}">
-    Email: <input type="text" th:field="*{email}"> </br>
+    Email: <input type="text" th:field="*{email}"> <br/>
     <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
-    Password: <input type="password" th:field="*{password}"></br>
+    Password: <input type="password" th:field="*{password}"><br/>
     <div th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
     <button type="submit">Login</button>
 </form>

@@ -36,9 +36,6 @@ public class UserServiceInMemory implements UserService {
             throw new UserException("User is not found");
         }
         User user = o_user.get();
-        System.out.println("user =" + user);
-        System.out.println("password =" + password);
-        System.out.println("hashed_password =" + o_user.get().getHashedPassword());
         // user who want to log in must be state Active
         if(user.getState() != State.ACTIVE){
             throw new UserException("User is not activated");

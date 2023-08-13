@@ -34,9 +34,6 @@ public class UserRepo {
 
 
     public Optional<User> findByEmail(String email) {
-//        User user = (User) users.values().stream().filter(usr -> usr.getEmail().equalsIgnoreCase(email));
-//        System.out.println("user = " + user);
-//        return Optional.ofNullable(user);
         return users.values().stream().filter(user -> user.getEmail().equalsIgnoreCase(email)).findFirst();
     }
 }

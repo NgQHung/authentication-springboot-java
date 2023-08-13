@@ -2,6 +2,7 @@ package com.example.authentication.controller;
 
 import com.example.authentication.dto.UserDTO;
 import com.example.authentication.exception.UserException;
+import com.example.authentication.model.State;
 import com.example.authentication.model.User;
 import com.example.authentication.request.LoginRequest;
 import com.example.authentication.service.UserService;
@@ -37,10 +38,11 @@ public class LoginController {
     @PostMapping("login")
     public String handleLogin(@Valid @ModelAttribute LoginRequest loginRequest, BindingResult result, HttpSession session)
             throws InvalidKeySpecException, NoSuchAlgorithmException {
+        System.out.println("Result = " +result);
         if(result.hasErrors()){
             return "login";
         }
-        User user = null;
+        User user = new User("","", "", "", State.PENDING);
         try{
             userService.login(loginRequest.email(), loginRequest.password());
             session.setAttribute("user", new UserDTO(user.getId(), user.getFullName(),user.getEmail()));
