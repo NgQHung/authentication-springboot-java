@@ -14,7 +14,7 @@
                 <th>Email</th>
                 <th>State</th>
                 <th>Change State</th>
-                <th>Edit</th>
+                <th>Action</th>
 
             </tr>
             <tr th:each="user: ${listUsers.listUsers}">
@@ -29,8 +29,13 @@
                     <form method="get" th:action="edit">
                         <button th:value="${user.getId()}" th:name="id" type="submit" >Edit
                         </button>
+                    </form><br/>
+                    <form method="post" th:action="delete">
+                        <button th:value="${user.getId()}" th:name="id" type="submit" >Delete
+                        </button>
                     </form>
                 </td>
+
             </tr>
         </table>
 </body>

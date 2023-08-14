@@ -108,7 +108,6 @@ public class LoginController {
     public String showAdminPage (HttpSession session, Model model){
         UserDTO userDTO =(UserDTO) session.getAttribute("user");
         ListUsersDTO listUsersDTO = (ListUsersDTO) session.getAttribute("listUsers");
-
         if(userDTO != null){
             model.addAttribute("listUsers", listUsersDTO);
             return "admin";
@@ -130,37 +129,25 @@ public class LoginController {
         User getUser = user.get();
         model.addAttribute("editRequest", new EditUserDTO(getUser.getId(),getUser.getFullName(),getUser.getEmail(),getUser.getHashedPassword(), getUser.getState()));
         session.setAttribute("editRequest", new EditUserDTO(getUser.getId(),getUser.getFullName(),getUser.getEmail(),getUser.getHashedPassword(), getUser.getState()));
-        System.out.println("showEditPage=" + session.getAttribute("editRequest"));
         return "edit";
+    }
+    @PostMapping(value="/delete")
+    public String deleteById (@RequestParam(value = "id", required = false) String id,HttpSession session, Model model){
+        userService.deleteUserById(id);
+        session.setAttribute("listUsers", new ListUsersDTO(userService.getListUsers()));
+        return "redirect:/admin";
     }
     @PostMapping("edit")
     public String updateById( @Valid @ModelAttribute EditRequest editRequest, BindingResult result, HttpSession session) {
         EditUserDTO editUserDTO =(EditUserDTO) session.getAttribute("editRequest");
-
         User userFromEdit = new User(editUserDTO.id(),editRequest.fullName(), editRequest.email(), editRequest.password(),editRequest.state());
         User user;
         List<User> listUsers;
-//        try {
-        System.out.println("userFromEdit= " + userFromEdit);
-            user = userService.updateUserById(userFromEdit);
-            listUsers = userService.getListUsers();
-            session.setAttribute("editRequest", user);
-            session.setAttribute("listUsers", new ListUsersDTO(listUsers));
-//            return "redirect:/";
-//        } catch (UserException ex) {
-//            System.out.println(ex.getMessage());
-//            switch (ex.getMessage()) {
-//                case "":
-//                    result.addError(new FieldError("loginRequest", "email", "Email does not exist"));
-//                    break;
-//                case "User is not activated":
-//                    result.addError(new FieldError("loginRequest", "email", "User is not activated"));
-//                    break;
-//                case "Password is incorrect":
-//                    result.addError(new FieldError("loginRequest", "password", "Password is incorrect"));
-//                    break;
-//            }
-            return "redirect:/admin";
+        user = userService.updateUserById(userFromEdit);
+        listUsers = userService.getListUsers();
+        session.setAttribute("editRequest", user);
+        session.setAttribute("listUsers", new ListUsersDTO(listUsers));
+        return "redirect:/admin";
 
     }
 

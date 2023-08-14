@@ -46,5 +46,8 @@ public class UserRepo {
         users.put(user.getId(), user);
         return user;
     }
+    public User deleteUserById(String id){
+        return users.remove(id);
+    }
 
 }

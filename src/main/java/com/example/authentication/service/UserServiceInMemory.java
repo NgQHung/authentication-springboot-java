@@ -85,8 +85,8 @@ public class UserServiceInMemory implements UserService {
     }
 
     @Override
-    public void deleteUserById(String id) {
-
+    public User deleteUserById(String id) {
+        return userRepo.deleteUserById(id);
     }
 
     @Override
@@ -95,7 +95,6 @@ public class UserServiceInMemory implements UserService {
         if(o_user.isEmpty()){
             throw new UserException("User is not found");
         }
-//        User new_user = new User(user);
         return o_user;
     }
 

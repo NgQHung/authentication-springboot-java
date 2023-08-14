@@ -16,7 +16,7 @@ public interface UserService {
     public User addUserThenAutoActivate(String fullName, String email, String password) throws InvalidKeySpecException, NoSuchAlgorithmException;
     public User activeUser(String id);
     public Boolean updatePassword(String email, String password);
-    public void deleteUserById(String id);
+    public User deleteUserById(String id);
     public Optional<User> getUserById(String id);
     public User updateUserById(User user);
     public Boolean updateEmail(String email, String newEmail);

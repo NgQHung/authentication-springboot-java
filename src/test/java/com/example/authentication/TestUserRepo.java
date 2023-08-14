@@ -75,14 +75,31 @@ public class TestUserRepo {
         User user = userRepo.addUser("hung", "hung@hung.hung", "osnc-8xsdhfow93", "ACTIVE");
         User new_user = new User(user.getId(),"hung@hung.hung", "hung", "osnc-8xsdhfow93", "PENDING");
         User user_1 = userRepo.addUser("Minh Anh", "ma@ma.ma", "osnc-8xsdh4w93", "PENDING");
-            User new_user_1 = new User(user_1.getId(),"hung@hung.hung", "Minh Anh", "osnc-8xsdhfow93", "ACTIVE");
-
+        User new_user_1 = new User(user_1.getId(),"hung@hung.hung", "Minh Anh", "osnc-8xsdhfow93", "ACTIVE");
         assertThat(userRepo.updateUserById(new_user)).isNotNull();
         assertThat(userRepo.updateUserById(new_user).getId()).isNotBlank();
         assertThat(userRepo.updateUserById(new_user).getState()).isEqualTo(State.PENDING);
         assertThat(userRepo.updateUserById(new_user_1).getEmail()).isEqualTo("hung@hung.hung");
         assertThat(userRepo.updateUserById(new_user_1).getId()).isNotBlank();
         assertThat(userRepo.updateUserById(new_user_1).getState()).isNotEqualTo(State.PENDING);
+    }
+
+    @Test
+    public void deleteUserById(){
+        UserRepo userRepo = new UserRepo();
+        User user = userRepo.addUser("hung", "hung@hung.hung", "osnc-8xsdhfow93", "ACTIVE");
+        User user_1 = userRepo.addUser("Minh Anh", "ma@ma.ma", "osnc-8xsdh4w93", "PENDING");
+        User user_2 = userRepo.addUser("Manh Hung", "mh@mh.mh", "osnc-8xsdh4w93", "ACTIVE");
+        assertThat(userRepo.deleteUserById(user.getId())).isNotNull();
+        assertThat(userRepo.getListUsers().contains(user)).isFalse();
+        assertThat(userRepo.getListUsers().size()== 2).isTrue() ;
+        assertThat(userRepo.deleteUserById(user_1.getId())).isNotNull();
+        assertThat(userRepo.getListUsers().contains(user_1)).isFalse();
+        assertThat(userRepo.getListUsers().contains(user_2)).isTrue();
+        assertThat(userRepo.getListUsers().size()== 1).isTrue() ;
+        assertThat(userRepo.getListUsers().size()== 2).isFalse() ;
+
+
     }
 
 
