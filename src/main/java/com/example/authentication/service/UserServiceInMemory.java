@@ -5,7 +5,6 @@ import com.example.authentication.model.State;
 import com.example.authentication.model.User;
 import com.example.authentication.repository.UserRepo;
 import com.example.authentication.security.Hashing;
-import com.example.authentication.security.SHAHash;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +13,6 @@ import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 @AllArgsConstructor
@@ -35,12 +33,12 @@ public class UserServiceInMemory implements UserService {
     public User login(String email, String password) throws InvalidKeySpecException, NoSuchAlgorithmException, UserException {
         Optional<User> o_user = userRepo.findByEmail(email);
         // Check the exist of user
-        if(!o_user.isPresent()){
+        if(o_user.isEmpty()){
             throw new UserException("User is not found");
         }
         User user = o_user.get();
         // user who want to log in must be state Active
-        if(user.getState() != State.ACTIVE){
+        if(!user.getState().equals("ACTIVE")){
             throw new UserException("User is not activated");
         }
         // Check the password
@@ -67,17 +65,18 @@ public class UserServiceInMemory implements UserService {
 
     @Override
     public User addUserThenAutoActivate(String fullName, String email, String password) throws InvalidKeySpecException, NoSuchAlgorithmException {
-        return userRepo.addUser(fullName, email, hashing.hashPassword(password), State.ACTIVE);
+        return userRepo.addUser(fullName, email, hashing.hashPassword(password), "ACTIVE");
     }
 
     @Override
-    public Boolean activeUser(String id) {
+    public User activeUser(String id) {
         Optional<User> o_user = userRepo.findById(id);
-        User new_o_user = new User(o_user.get().getId(),o_user.get().getFullName(), o_user.get().getEmail(), o_user.get().getHashedPassword(), State.ACTIVE);
-        User newUser = userRepo.changeState(new_o_user);
-//        if(o_user.isPresent())
-        System.out.println("Updated user = " + newUser);
-        return null;
+        if(o_user.isEmpty()){
+            throw new UserException("User is not found");
+        }
+        User user = o_user.get();
+        User new_o_user = new User(user.getId(),user.getFullName(), user.getEmail(), user.getHashedPassword(), "ACTIVE");
+        return userRepo.updateUserById(new_o_user);
     }
 
     @Override
@@ -86,19 +85,30 @@ public class UserServiceInMemory implements UserService {
     }
 
     @Override
-    public Boolean updateEmail(String email, String newEmail) {
-        return null;
+    public void deleteUserById(String id) {
+
     }
 
     @Override
-    public Optional<User> findByEmail(String email) {
-        return Optional.empty();
+    public Optional<User> getUserById(String id) {
+        Optional<User> o_user = userRepo.findById(id);
+        if(o_user.isEmpty()){
+            throw new UserException("User is not found");
+        }
+//        User new_user = new User(user);
+        return o_user;
     }
 
-//    @Override
-//    public User findById(String id) {
-//        return null;
-//    }
+    @Override
+    public User updateUserById(User user) {
+        User new_user = new User(user.getId(),user.getFullName(), user.getEmail(), user.getHashedPassword(), user.getState());
+        return userRepo.updateUserById(new_user);
+    }
+
+    @Override
+    public Boolean updateEmail(String email, String newEmail) {
+        return null;
+    }
 
     @Override
     public  List<User> getListUsers() {

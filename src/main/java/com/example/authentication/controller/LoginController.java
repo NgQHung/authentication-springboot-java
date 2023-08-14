@@ -1,17 +1,20 @@
 package com.example.authentication.controller;
 
+import com.example.authentication.dto.EditUserDTO;
 import com.example.authentication.dto.ListUsersDTO;
-import com.example.authentication.dto.StateDTO;
 import com.example.authentication.dto.UserDTO;
 import com.example.authentication.exception.UserException;
 import com.example.authentication.model.State;
 import com.example.authentication.model.User;
+import com.example.authentication.request.EditRequest;
 import com.example.authentication.request.LoginRequest;
 import com.example.authentication.request.RegisterRequest;
 import com.example.authentication.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -21,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/")
@@ -50,8 +54,10 @@ public class LoginController {
         List<User> listUsers;
         try{
             user = userService.login(loginRequest.email(), loginRequest.password());
-            listUsers = userService.getListUsers();
-            session.setAttribute("listUsers", new ListUsersDTO(listUsers) );
+            if(user.getFullName().equals("Admin")){
+                listUsers = userService.getListUsers();
+                session.setAttribute("listUsers", new ListUsersDTO(listUsers) );
+            }
             session.setAttribute("user", new UserDTO(user.getId(), user.getFullName(),user.getEmail()));
             return "redirect:/";
         }catch(UserException ex){
@@ -118,6 +124,46 @@ public class LoginController {
         session.setAttribute("listUsers", new ListUsersDTO(listUsers) );
         return "redirect:/admin";
     }
+    @RequestMapping(value="/edit", method = RequestMethod.GET)
+    public String showEditPage (@RequestParam(value = "id", required = false) String id,HttpSession session, Model model){
+        Optional<User> user = userService.getUserById(id);
+        User getUser = user.get();
+        model.addAttribute("editRequest", new EditUserDTO(getUser.getId(),getUser.getFullName(),getUser.getEmail(),getUser.getHashedPassword(), getUser.getState()));
+        session.setAttribute("editRequest", new EditUserDTO(getUser.getId(),getUser.getFullName(),getUser.getEmail(),getUser.getHashedPassword(), getUser.getState()));
+        System.out.println("showEditPage=" + session.getAttribute("editRequest"));
+        return "edit";
+    }
+    @PostMapping("edit")
+    public String updateById( @Valid @ModelAttribute EditRequest editRequest, BindingResult result, HttpSession session) {
+        EditUserDTO editUserDTO =(EditUserDTO) session.getAttribute("editRequest");
+
+        User userFromEdit = new User(editUserDTO.id(),editRequest.fullName(), editRequest.email(), editRequest.password(),editRequest.state());
+        User user;
+        List<User> listUsers;
+//        try {
+        System.out.println("userFromEdit= " + userFromEdit);
+            user = userService.updateUserById(userFromEdit);
+            listUsers = userService.getListUsers();
+            session.setAttribute("editRequest", user);
+            session.setAttribute("listUsers", new ListUsersDTO(listUsers));
+//            return "redirect:/";
+//        } catch (UserException ex) {
+//            System.out.println(ex.getMessage());
+//            switch (ex.getMessage()) {
+//                case "":
+//                    result.addError(new FieldError("loginRequest", "email", "Email does not exist"));
+//                    break;
+//                case "User is not activated":
+//                    result.addError(new FieldError("loginRequest", "email", "User is not activated"));
+//                    break;
+//                case "Password is incorrect":
+//                    result.addError(new FieldError("loginRequest", "password", "Password is incorrect"));
+//                    break;
+//            }
+            return "redirect:/admin";
+
+    }
+
     @GetMapping("logout")
     public String logout (HttpSession session){
         session.setAttribute("user", null);

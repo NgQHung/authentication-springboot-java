@@ -14,6 +14,8 @@
                 <th>Email</th>
                 <th>State</th>
                 <th>Change State</th>
+                <th>Edit</th>
+
             </tr>
             <tr th:each="user: ${listUsers.listUsers}">
                 <td th:text="${user.getId()}"></td>
@@ -21,8 +23,14 @@
                 <td th:text="${user.getEmail()}"></td>
                 <td th:text="${user.getState()}"></td>
                 <td><form th:action="change-state">
-                    <button type="submit" th:if="${user.getState() != 'ACTIVE'}" th:name="action" th:value="${user.getId()}" th:onclick="|window.location.href='/change-state'|">Change</button>
+                    <button type="submit" th:if="${user.getState() != 'ACTIVE'}" th:name="action" th:value="${user.getId()}">Change</button>
                 </form></td>
+                <td>
+                    <form method="get" th:action="edit">
+                        <button th:value="${user.getId()}" th:name="id" type="submit" >Edit
+                        </button>
+                    </form>
+                </td>
             </tr>
         </table>
 </body>

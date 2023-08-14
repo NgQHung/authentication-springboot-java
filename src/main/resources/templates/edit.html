@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit</title>
+</head>
+<body>
+<h1>Edit</h1>
+
+<!--<p th:text="${error.message}"></p>-->
+<!--<a href="/">Return to home page</a>-->
+<form method="post" action="#" th:action="edit" th:object="${editRequest}">
+    Full Name: <input type="text" th:value="${editRequest.fullName()}" th:field="*{fullName}"> <br/>
+    Email: <input type="text" th:value="${editRequest.email()}" th:field="*{email}"><br/>
+    <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+    Password: <input type="text" th:value="${editRequest.password()}" th:field="*{password}"> <br/>
+    <div th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+    State: <div th:text="${editRequest.state()}"></div>
+    <select th:field="*{state}">
+        <option th:value="'ACTIVE'" th:text="ACTIVE" >ACTIVE</option>
+        <option th:value="'PENDING'" th:text="PENDING">PENDING</option>
+        <option th:value="'DISABLED'" th:text="DISABLED">DISABLED</option>
+        <option th:value="'REMOVED'" th:text="REMOVED">REMOVED</option>
+    </select><br/>
+    <button type="submit">Save</button>
+</form>
+</body>
+</html>

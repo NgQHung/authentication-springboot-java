@@ -13,5 +13,5 @@ public class User {
     private String email;
     private String fullName;
     private String hashedPassword;
-    private State state;
+    private String state;
 }

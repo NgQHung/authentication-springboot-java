@@ -14,10 +14,10 @@ public class UserRepo {
     private ConcurrentHashMap<String, User> users = new ConcurrentHashMap<>();
 
     public User addUser(String fullName, String email, String hashed_password){
-        return addUser(fullName, email, hashed_password, State.PENDING);
+        return addUser(fullName, email, hashed_password, "PENDING");
     }
 
-    public User addUser(String fullName, String email, String hashed_password, State state){
+    public User addUser(String fullName, String email, String hashed_password, String state){
         String id = UUID.randomUUID().toString();
         User user = User.builder()
                 .id(id)
@@ -40,12 +40,11 @@ public class UserRepo {
         return users.values().stream().filter(user -> user.getEmail().equalsIgnoreCase(email)).findFirst();
     }
     public Optional<User> findById(String id) {
-        return users.values().stream().filter(user -> user.getId().equals(id)).findFirst();
+        return users.values().stream().filter(user -> user.getId().equalsIgnoreCase(id)).findFirst();
     }
-    public User changeState(User user){
-        System.out.println("State User Repo = " + user.getState());
-        return users.put(user.getId(), user);
+    public User updateUserById(User user){
+        users.put(user.getId(), user);
+        return user;
     }
-
 
 }
