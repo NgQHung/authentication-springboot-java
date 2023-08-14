@@ -7,6 +7,7 @@
 <body>
 
 <h1>Login</h1>
+<a href="/">Return to home page</a>
 <form method="post" action="#" th:action="login" th:object="${loginRequest}">
     Email: <input type="text" th:field="*{email}"> <br/>
     <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>

@@ -12,9 +12,14 @@
     <a href="/logout" th:if="${user.fullName() == 'Admin' }" th:text="|Logout as ${user.fullName}|">Logout</a><br/>
     <a href="/admin" th:if="${user.fullName() == 'Admin' }" th:text="Admin" ></a><br/>
     <a href="/logout" th:unless="${user.fullName() == 'Admin'}" th:text="|Logout as ${user.fullName}|">Logout</a>
+    <a th:href="@{/user/{id}/(id=${user.id})}"  th:if="${user.fullName() != 'Admin' }" th:text="${user.fullName()}" ></a><br/>
+    <!--    <button th:onclick="|window.location.href='/edit?='+ ${user.id()}|">Change your info</button>-->
+
 </th:block>
 <th:block th:if="${user == null}">
     <a href="/login">Login</a></br>
+
+<!--    <a href="/" th:if="${user.fullName() == 'Admin' }" th:text="Admin" ></a><br/>-->
     <a href="/register">Register</a><br/>
 </th:block>
 </body>

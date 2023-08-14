@@ -150,6 +150,14 @@ public class LoginController {
         return "redirect:/admin";
 
     }
+    @GetMapping("user/{id}")
+    public String userPage(Model model, HttpSession session, @PathVariable String id){
+        UserDTO userDTO =(UserDTO) session.getAttribute("user");
+        if(userDTO != null ){
+            model.addAttribute("user", userDTO);
+        }
+        return "redirect:/user/" + id;
+    }
 
     @GetMapping("logout")
     public String logout (HttpSession session){

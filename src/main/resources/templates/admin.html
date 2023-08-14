@@ -6,8 +6,9 @@
 </head>
 <body>
     <h1>Admin</h1>
-<!--    <th:block >-->
-        <table>
+    <a href="/">Return to home page</a>
+    <div th:if="${listUsers.listUsers().size() > 0}">
+        <table >
             <tr>
                 <th>ID</th>
                 <th>Full Name</th>
@@ -35,8 +36,15 @@
                         </button>
                     </form>
                 </td>
+                <th:block th:if="${user} == null">
+                    <span></span>
+                </th:block>
 
             </tr>
         </table>
+    </div>
+    <div th:unless="${listUsers.listUsers().size() > 0}">
+        There is no users.
+    </div>
 </body>
 </html>

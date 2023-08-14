@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User</title>
+</head>
+<body>
+    <h1>User</h1>
+    <div th:object="${user}">
+        <div><h2>Full Name:</h2> <span th:text="${user.fullName()}"></span></div><br/>
+        <div><h2>Email:</h2> <span th:value="${user.email()}"></span></div><br/>
+        <button th:onclick="|window.location.href='/edit?='+ ${user.id()}|">Change your info</button>
+        <div><h2>State:</h2> <span th:value="${user.state()}"></span></div><br/>
+    </div>
+</body>
+</html>
